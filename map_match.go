@@ -3,6 +3,8 @@ package valhalla
 import (
 	"bytes"
 	"encoding/json"
+
+	easyjson "github.com/mailru/easyjson"
 )
 
 type TraceRouteRequest struct {
@@ -11,19 +13,22 @@ type TraceRouteRequest struct {
 	UseTimestamps     bool              `json:"use_timestamps"`
 	Costing           string            `json:"costing,omitempty"`
 	DirectionsOptions DirectionsOptions `json:"directions_options,omitempty"`
-	TraceOptions      struct {
-		SearchRadius          *float64 `json:"search_radius,omitempty"`
-		GPSAccuracy           *float64 `json:"gps_accuracy,omitempty"`
-		BreakageDistance      *float64 `json:"breakage_distance,omitempty"`
-		InterpolationDistance *float64 `json:"interpolation_distance,omitempty"`
-	} `json:"trace_options,omitempty"`
-	LinearReferences bool   `json:"linear_references"`
-	EncodedPolyline  string `json:"encoded_polyline"`
+	TraceOptions      TraceOptions      `json:"trace_options,omitempty"`
+	LinearReferences  bool              `json:"linear_references"`
+	EncodedPolyline   string            `json:"encoded_polyline"`
+	ShapeMatch        string            `json:"shape_match,omitempty"`
 }
-
+type TraceOptions struct {
+	SearchRadius          *float64 `json:"search_radius,omitempty"`
+	GPSAccuracy           *float64 `json:"gps_accuracy,omitempty"`
+	BreakageDistance      *float64 `json:"breakage_distance,omitempty"`
+	InterpolationDistance *float64 `json:"interpolation_distance,omitempty"`
+}
 type TraceAttributesRequest struct {
-	EncodedPolyline string `json:"encoded_polyline"`
-	Costing         string `json:"costing,omitempty"`
+	EncodedPolyline string       `json:"encoded_polyline"`
+	Costing         string       `json:"costing,omitempty"`
+	TraceOptions    TraceOptions `json:"trace_options,omitempty"`
+	ShapeMatch      string       `json:"shape_match,omitempty"`
 }
 type TraceAttributesResponse struct {
 	Edges           []Edge  `json:"edges"`
@@ -105,7 +110,7 @@ type Edge struct {
 }
 
 func (c *Client) TraceRoute(request TraceRouteRequest) (RouteResponse, error) {
-	r, err := json.Marshal(request)
+	r, err := easyjson.Marshal(request)
 	result := RouteResponse{}
 
 	if err != nil {
@@ -124,7 +129,7 @@ func (c *Client) TraceRoute(request TraceRouteRequest) (RouteResponse, error) {
 	return result, nil
 }
 func (c *Client) TraceAttributes(request TraceAttributesRequest) (TraceAttributesResponse, error) {
-	r, err := json.Marshal(request)
+	r, err := easyjson.Marshal(request)
 	result := TraceAttributesResponse{}
 
 	if err != nil {
