@@ -247,6 +247,16 @@ func easyjsonD10c3f52DecodeGithubComLittlemonkeyltdValhallaGoBindings1(in *jlexe
 				}
 				*out.InterpolationDistance = float64(in.Float64())
 			}
+		case "turn_penalty_factor":
+			if in.IsNull() {
+				in.Skip()
+				out.TurnPenaltyFactor = nil
+			} else {
+				if out.TurnPenaltyFactor == nil {
+					out.TurnPenaltyFactor = new(float64)
+				}
+				*out.TurnPenaltyFactor = float64(in.Float64())
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -296,6 +306,16 @@ func easyjsonD10c3f52EncodeGithubComLittlemonkeyltdValhallaGoBindings1(out *jwri
 			out.RawString(prefix)
 		}
 		out.Float64(float64(*in.InterpolationDistance))
+	}
+	if in.TurnPenaltyFactor != nil {
+		const prefix string = ",\"turn_penalty_factor\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Float64(float64(*in.TurnPenaltyFactor))
 	}
 	out.RawByte('}')
 }
